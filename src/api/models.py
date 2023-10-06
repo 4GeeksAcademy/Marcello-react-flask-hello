@@ -23,17 +23,21 @@ class User(db.Model):
     episode = db.relationship("Episode", secondary=favorite_episode)
     location = db.relationship("Location", secondary=favorite_location)
     
-
     def __repr__(self):
         return f'<User {self.email}>'
 
     def serialize(self):
+        favorite_characters = [character.serialize() for character in self.character]
+        favorite_episodes = [episode.serialize() for episode in self.episode]
+        favorite_locations = [location.serialize() for location in self.location]
+
         return {
             "id": self.id,
             "email": self.email,
             "name": self.name,
-            "favorite":self.favorite
-            # do not serialize the password, its a security breach
+            "favorite_characters": favorite_characters,
+            "favorite_episodes": favorite_episodes,
+            "favorite_locations": favorite_locations
         },
 
 class Character(db.Model):
@@ -78,7 +82,7 @@ class Episode(db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "air.date":self.air.date,
+            "air_date":self.air_date,
             "episode":self.episode,
             "character":self.character,
             "image":self.image           
